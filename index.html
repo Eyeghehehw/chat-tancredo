@@ -11,6 +11,7 @@
     flex-direction: column;
     height: 100vh;
     margin: 0;
+    transition: background 0.3s, color 0.3s;
   }
 
   header {
@@ -18,6 +19,7 @@
     text-align: center;
     font-size: 1.5em;
     font-weight: bold;
+    transition: background 0.3s, color 0.3s;
   }
 
   #chat {
@@ -27,6 +29,7 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
+    transition: background 0.3s;
   }
 
   .message {
@@ -35,10 +38,17 @@
     border-radius: 12px;
     word-wrap: break-word;
     line-height: 1.4;
+    opacity: 0;
+    transform: translateX(-50px);
+    animation: slideIn 0.4s forwards;
   }
 
   .user { align-self: flex-end; }
   .bot { align-self: flex-start; }
+
+  @keyframes slideIn {
+    to { opacity: 1; transform: translateX(0); }
+  }
 
   #inputArea {
     display: flex;
@@ -51,6 +61,7 @@
     border-radius: 8px;
     border: 2px solid;
     font-size: 16px;
+    transition: border-color 0.3s, background 0.3s, color 0.3s;
   }
 
   #sendBtn, #themeBtn, #clearBtn {
@@ -60,6 +71,7 @@
     border-radius: 8px;
     font-size: 16px;
     cursor: pointer;
+    transition: background 0.3s, color 0.3s;
   }
 
   footer {
@@ -74,6 +86,7 @@
     font-style: italic;
     color: #555;
     margin-bottom: 5px;
+    transition: color 0.3s;
   }
 
   /* ---------- Tema Claro ---------- */
@@ -157,16 +170,30 @@ function equacaoSegundoGrau(a,b,c){
   if (delta === 0) return "A raiz dupla é " + (-b/(2*a));
   let x1 = (-b + Math.sqrt(delta))/(2*a);
   let x2 = (-b - Math.sqrt(delta))/(2*a);
-  return `As raízes são ${x1} e ${x2}`;
+  return As raízes são ${x1} e ${x2};
+}
+
+function calcularExpressao(msg) {
+  try {
+    // Substitui multiplos sinais escritos por símbolos
+    msg = msg.replace(/vezes|x/g,'*').replace(/mais/g,'+').replace(/menos/g,'-').replace(/dividido por/g,'/');
+    // Só permite números e operadores
+    if (/^[0-9+\-*/().\s]+$/.test(msg)) {
+      return "Resultado: " + eval(msg);
+    }
+  } catch {}
+  return null;
 }
 
 function botResponse(msg) {
   msg = msg.toLowerCase().trim();
 
+  // Resposta emocional
   if (msg.includes("mal") || msg.includes("triste") || msg.includes("depressivo")) {
     return "Conversa com o Greguinho 💕";
   }
 
+  // Equação do 2º grau
   if (msg.startsWith("equacao")) {
     try {
       let [_, a, b, c] = msg.split(" ");
@@ -174,30 +201,39 @@ function botResponse(msg) {
     } catch { return "Use: equacao a b c (ex: equacao 1 -3 2)"; }
   }
 
+  // Potência
   if (msg.startsWith("potencia")) {
     try {
       let [_, base, exp] = msg.split(" ");
-      return `${base} ^ ${exp} = ${Math.pow(parseFloat(base),parseFloat(exp))}`;
+      return ${base} ^ ${exp} = ${Math.pow(parseFloat(base),parseFloat(exp))};
     } catch { return "Use: potencia base expoente (ex: potencia 2 3)"; }
   }
 
+  // Raiz
   if (msg.startsWith("raiz")) {
     try {
       let [_, valor] = msg.split(" ");
       valor = parseFloat(valor);
       if (valor < 0) return "Não existe raiz real 😿";
-      return `√${valor} = ${Math.sqrt(valor)}`;
+      return √${valor} = ${Math.sqrt(valor)};
     } catch { return "Use: raiz numero (ex: raiz 25)"; }
   }
 
+  // Contas básicas +, -, *, /
+  const resultadoConta = calcularExpressao(msg);
+  if (resultadoConta) return resultadoConta;
+
+  // Cumprimentos
   if (msg.includes("oi")) return "Oi! Como você está? 😄";
   if (msg.includes("tudo bem")) return "Tudo ótimo, e você?";
   if (msg.includes("nome")) return "Eu sou o Chat Tancredo!";
+
+  // Histórico
   if (msg.includes("histórico") || msg.includes("conversa")) {
     return conversa.map(c => (c.sender==="user"?"Você: ":"Chatbot: ") + c.text).join("\n");
   }
 
-  // Respostas divertidas adicionais
+  // Respostas divertidas
   const respostas = [
     "Interessante! 😎",
     "Hmm, me conta mais!",
@@ -239,6 +275,5 @@ themeBtn.addEventListener("click", toggleTheme);
 clearBtn.addEventListener("click", clearChat);
 
 </script>
-
 </body>
 </html>
