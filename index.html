@@ -185,6 +185,18 @@ function calcularExpressao(msg) {
   return null;
 }
 
+function calcularExpressao(msg) {
+  try {
+    // Substitui multiplos sinais escritos por símbolos
+    msg = msg.replace(/vezes|x/g,'*').replace(/mais/g,'+').replace(/menos/g,'-').replace(/dividido por/g,'/');
+    // Só permite números e operadores
+    if (/^[0-9+\-*/().\s]+$/.test(msg)) {
+      return "Resultado: " + eval(msg);
+    }
+  } catch {}
+  return null;
+}
+
 function botResponse(msg) {
   msg = msg.toLowerCase().trim();
 
