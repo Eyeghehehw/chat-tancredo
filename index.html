@@ -148,22 +148,73 @@ function addMessage(text, sender) {
   chat.appendChild(div);
   chat.scrollTop = chat.scrollHeight;
 
-  // Atualiza frase motivacional
   if (frasesMotivacionais.length === 0) frasesMotivacionais = [...frasesMotivacionaisOriginais];
   const idx = Math.floor(Math.random() * frasesMotivacionais.length);
   fraseDiv.textContent = frasesMotivacionais[idx];
   frasesMotivacionais.splice(idx,1);
 }
 
+// 🔹 Funções para equação de 2º grau
+function normalizarTexto(s) {
+  return s
+    .replace(/,/g, ".")
+    .replace(/×/g, "x")
+    .replace(/X/g, "x")
+    .replace(/–|—/g, "-")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+function numeroOuDefault(str, def = 1) {
+  if (str === "" || str === "+") return +def;
+  if (str === "-") return -def;
+  const n = parseFloat(str);
+  return isNaN(n) ? def : n;
+}
+function parseQuadratica(input) {
+  let s = normalizarTexto(input).toLowerCase();
+  s = s.replace(/x²/g, "x^2");
+  const tokens = s.split(" ").filter(Boolean);
+
+  let termos = [];
+  if (tokens.length === 1) {
+    const unico = tokens[0]
+      .replace(/-/g, " -")
+      .replace(/\+/g, " +")
+      .trim();
+    termos = unico.split(" ").filter(Boolean);
+  } else {
+    termos = tokens;
+  }
+
+  let a = 0, b = 0, c = 0;
+  for (const tRaw of termos) {
+    const t = tRaw.replace(/\s/g, "");
+    if (!t) continue;
+
+    let m = t.match(/^([+\-]?\d*\.?\d*)x\^?2$/);
+    if (m) { a = numeroOuDefault(m[1], 1); continue; }
+
+    m = t.match(/^([+\-]?\d*\.?\d*)x$/);
+    if (m) { b = numeroOuDefault(m[1], 1); continue; }
+
+    m = t.match(/^[+\-]?\d*\.?\d+$/);
+    if (m) { c += parseFloat(t); continue; }
+  }
+
+  if (a === 0 && b === 0 && c === 0) return null;
+  if (a === 0) return null;
+  return { a, b, c };
+}
 function equacaoSegundoGrau(a,b,c){
   const delta = b*b - 4*a*c;
   if (delta < 0) return "A equação não tem raízes reais 😿";
   if (delta === 0) return `A raiz dupla é ${-b/(2*a)}`;
   let x1 = (-b + Math.sqrt(delta))/(2*a);
   let x2 = (-b - Math.sqrt(delta))/(2*a);
-  return `As raízes são ${x1} e ${x2}`;
+  return `As raízes são ${x1} e ${x2} (Δ=${delta})`;
 }
 
+// 🔹 Avaliar expressões
 function calcularExpressao(msg) {
   try {
     msg = msg.replace(/\bvezes\b|x/g,'*')
@@ -184,12 +235,9 @@ function botResponse(msg){
     return "Conversa com o Greguinho 💕";
   }
 
-  if (msg.startsWith("equacao")) {
-    let parts = msg.split(" ");
-    if(parts.length===4){
-      return equacaoSegundoGrau(parseFloat(parts[1]),parseFloat(parts[2]),parseFloat(parts[3]));
-    } else return "Use: equacao a b c (ex: equacao 1 -3 2)";
-  }
+  // Equação de 2º grau (ex: "2x² 2x 6")
+  const parsed = parseQuadratica(msg);
+  if(parsed) return equacaoSegundoGrau(parsed.a, parsed.b, parsed.c);
 
   if (msg.startsWith("potencia")) {
     let parts = msg.split(" ");
@@ -246,7 +294,6 @@ function toggleTheme(){
   temaAtual = (temaAtual + 1) % temas.length;
   document.body.className = temas[temaAtual];
 }
-
 function clearChat(){
   chat.innerHTML = "";
   conversa = [];
