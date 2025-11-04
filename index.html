@@ -1,310 +1,458 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Chat Tancredo</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    display: flex;
-    flex-direction: column;
-    height: 100vh;
-    margin: 0;
-    transition: background 0.3s, color 0.3s;
-  }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nossos Momentos & Piadas do Nescau</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+        }
 
-  header {
-    padding: 15px;
-    text-align: center;
-    font-size: 1.5em;
-    font-weight: bold;
-    transition: background 0.3s, color 0.3s;
-  }
+        body {
+            background-color: #fff5f7;
+            color: #333;
+            padding: 20px;
+            background-image: radial-gradient(#ffccd5 1px, transparent 1px);
+            background-size: 20px 20px;
+        }
 
-  #chat {
-    flex: 1;
-    padding: 10px;
-    overflow-y: auto;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    transition: background 0.3s;
-  }
+        header {
+            text-align: center;
+            padding: 30px;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
 
-  .message {
-    max-width: 75%;
-    padding: 10px 14px;
-    border-radius: 12px;
-    word-wrap: break-word;
-    line-height: 1.4;
-    opacity: 0;
-    transform: translateX(-50px);
-    animation: slideIn 0.4s forwards;
-  }
+        header::before {
+            content: "💖";
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.1;
+            top: 10px;
+            right: 20px;
+            transform: rotate(15deg);
+        }
 
-  .user { align-self: flex-end; background: #007bff; color: #fff; }
-  .bot { align-self: flex-start; background: #28a745; color: #fff; }
+        h1 {
+            color: #d63384;
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 0 #ffccd5;
+        }
 
-  @keyframes slideIn {
-    to { opacity: 1; transform: translateX(0); }
-  }
+        .subtitle {
+            font-size: 1.2rem;
+            color: #e63946;
+        }
 
-  #inputArea {
-    display: flex;
-    padding: 10px;
-  }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
 
-  #userInput {
-    flex: 1;
-    padding: 10px;
-    border-radius: 8px;
-    border: 2px solid #007bff;
-    font-size: 16px;
-  }
+        .our-photos {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-bottom: 40px;
+            flex-wrap: wrap;
+        }
 
-  #sendBtn, #themeBtn, #clearBtn {
-    padding: 10px 15px;
-    margin-left: 5px;
-    border: none;
-    border-radius: 8px;
-    font-size: 16px;
-    cursor: pointer;
-  }
+        .photo-card {
+            background: white;
+            border-radius: 20px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 280px;
+            transition: transform 0.3s ease;
+        }
 
-  footer {
-    text-align: right;
-    padding: 5px 15px;
-    font-size: 0.9em;
-    color: gray;
-  }
+        .photo-card:hover {
+            transform: translateY(-10px);
+        }
 
-  #fraseMotivacional {
-    text-align: center;
-    font-style: italic;
-    color: #555;
-    margin-bottom: 5px;
-  }
+        .photo-card img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            border-radius: 15px;
+            border: 5px solid #ffccd5;
+        }
 
-  body.claro { background: #f5f5f5; color: #000; }
-  body.claro header { background: #007bff; color: #fff; }
-  body.claro #chat { background: #fff; }
-  body.claro #sendBtn { background: #007bff; color: #fff; }
-  body.claro #themeBtn { background: #6c757d; color: #fff; }
-  body.claro #clearBtn { background: #dc3545; color: #fff; }
+        .photo-name {
+            margin-top: 15px;
+            font-size: 1.3rem;
+            color: #d63384;
+            font-weight: bold;
+        }
 
-  body.escuro { background: #1e1e1e; color: #fff; }
-  body.escuro header { background: #333; color: #fff; }
-  body.escuro #chat { background: #2c2c2c; }
-  body.escuro .user { background: #3399ff; color: #fff; }
-  body.escuro .bot { background: #33cc77; color: #fff; }
-  body.escuro #userInput { border-color: #3399ff; background: #444; color: #fff; }
-  body.escuro #sendBtn { background: #3399ff; color: #fff; }
-  body.escuro #themeBtn { background: #ff9900; color: #fff; }
-  body.escuro #clearBtn { background: #dc3545; color: #fff; }
-</style>
+        .photo-description {
+            color: #666;
+            margin-top: 5px;
+            font-size: 0.9rem;
+        }
+
+        .together-section {
+            text-align: center;
+            margin: 40px 0;
+        }
+
+        .together-title {
+            color: #d63384;
+            font-size: 2rem;
+            margin-bottom: 20px;
+        }
+
+        .heart-connector {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+        }
+
+        .heart {
+            color: #e63946;
+            font-size: 2rem;
+            animation: pulse 1.5s infinite;
+            margin: 0 15px;
+        }
+
+        .nescau-section {
+            background-color: #fff;
+            border-radius: 20px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            border: 3px dashed #ffccd5;
+            position: relative;
+        }
+
+        .nescau-section::before {
+            content: "⚠️";
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            font-size: 2rem;
+            background: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px dashed #ffccd5;
+        }
+
+        .nescau-title {
+            text-align: center;
+            color: #8b4513;
+            font-size: 2rem;
+            margin-bottom: 20px;
+            text-decoration: underline wavy #ff9a9e;
+        }
+
+        .joke-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .joke-card {
+            background: #fff9f9;
+            border-radius: 15px;
+            padding: 20px;
+            width: 280px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #ff9a9e;
+            position: relative;
+            transition: transform 0.3s ease;
+            cursor: pointer;
+        }
+
+        .joke-card:hover {
+            transform: scale(1.05);
+        }
+
+        .joke-card::before {
+            content: "😂";
+            position: absolute;
+            top: -15px;
+            right: -10px;
+            font-size: 2rem;
+            transform: rotate(15deg);
+        }
+
+        .joke-text {
+            font-size: 1.1rem;
+            color: #8b4513;
+            line-height: 1.4;
+        }
+
+        .love-message {
+            text-align: center;
+            background: linear-gradient(135deg, #ff9a9e 0%, #fad0c4 100%);
+            padding: 30px;
+            border-radius: 20px;
+            margin-top: 30px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .love-message::before {
+            content: "💕💕💕";
+            position: absolute;
+            font-size: 80px;
+            opacity: 0.1;
+            bottom: -20px;
+            right: -20px;
+            transform: rotate(-15deg);
+        }
+
+        .love-text {
+            font-size: 1.5rem;
+            color: #d63384;
+            margin-bottom: 15px;
+            position: relative;
+            z-index: 2;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #d63384;
+            font-size: 0.9rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+
+        .floating {
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @media (max-width: 768px) {
+            .our-photos {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .photo-card {
+                width: 100%;
+                max-width: 300px;
+            }
+        }
+    </style>
 </head>
-<body class="claro">
+<body>
+    <div class="container">
+        <header>
+            <h1>Nossos Momentos Fofos 💖</h1>
+            <p class="subtitle">E as piadas sobre o Nescau dela! 😂</p>
+        </header>
 
-<header>🤖 Chat Tancredo</header>
+        <div class="our-photos">
+            <div class="photo-card floating">
+                <img src="https://i.imgur.com/lvKwv6N.jpeg" alt="Foto dela">
+                <div class="photo-name">Ela 💕</div>
+                <div class="photo-description">A dona do Nescau duvidoso! 😜</div>
+            </div>
+            
+            <div class="heart-connector">
+                <div class="heart">❤️</div>
+            </div>
+            
+            <div class="photo-card floating">
+                <img src="https://i.imgur.com/WeveeLC.jpeg" alt="Foto dele">
+                <div class="photo-name">Você 😊</div>
+                <div class="photo-description">O crítico oficial do Nescau! 👨‍⚖️</div>
+            </div>
+        </div>
 
-<div id="fraseMotivacional"></div>
-<div id="chat"></div>
+        <section class="together-section">
+            <h2 class="together-title">Juntos Somos Demais! 💑</h2>
+            <p style="color: #666; font-size: 1.1rem;">Mesmo com gostos diferentes em chocolate... 😅</p>
+        </section>
 
-<div id="inputArea">
-  <input type="text" id="userInput" placeholder="Digite algo..." autofocus>
-  <button id="sendBtn">Enviar</button>
-  <button id="clearBtn">Limpar</button>
-  <button id="themeBtn">Tema</button>
-</div>
+        <section class="nescau-section">
+            <h2 class="nescau-title">Piadas Sobre o Nescau Dela 😜</h2>
+            <div class="joke-container">
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela é tão ruim que até o leite se recusa a se misturar!</p>
+                </div>
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela tem mais conservantes do que personalidade!</p>
+                </div>
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela é tão doce que os dentistas fazem fila na porta!</p>
+                </div>
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela é a prova de que nem tudo que é chocolate é bom!</p>
+                </div>
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela é tão artificial que brilha no escuro!</p>
+                </div>
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela tem mais açúcar do que uma fábrica de doces!</p>
+                </div>
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela é tão ruim que até o Toddy sente pena!</p>
+                </div>
+                <div class="joke-card">
+                    <p class="joke-text">O Nescau dela é a única coisa que não combina com ela!</p>
+                </div>
+            </div>
+        </section>
 
-<footer>By: Gabriel Almeida 1 - EMTI</footer>
+        <div class="love-message">
+            <p class="love-text">Mesmo com esse gosto duvidoso para Nescau, eu te amo muito! 💖</p>
+            <p class="love-text">Você é incrível do jeito que é (menos no gosto por Nescau! 😂)</p>
+            <div class="heart" style="font-size: 3rem; margin-top: 15px;">❤️</div>
+        </div>
 
-<script>
-const chat = document.getElementById("chat");
-const input = document.getElementById("userInput");
-const sendBtn = document.getElementById("sendBtn");
-const themeBtn = document.getElementById("themeBtn");
-const clearBtn = document.getElementById("clearBtn");
-const fraseDiv = document.getElementById("fraseMotivacional");
+        <footer>
+            <p>Feito com ❤️ e muitas risadas | Site personalizado para nós</p>
+        </footer>
+    </div>
 
-let temaAtual = 0;
-const temas = ["claro","escuro"];
-let conversa = [];
-
-const frasesMotivacionaisOriginais = [
-  "Acredite em você e tudo será possível!",
-  "Pequenos passos também levam longe.",
-  "Nunca é tarde para recomeçar.",
-  "Você é mais forte do que imagina.",
-  "Faça hoje algo que seu futuro agradeça."
-];
-let frasesMotivacionais = [...frasesMotivacionaisOriginais];
-
-function addMessage(text, sender) {
-  const div = document.createElement("div");
-  div.className = "message " + sender;
-  div.textContent = text;
-  chat.appendChild(div);
-  chat.scrollTop = chat.scrollHeight;
-
-  if (frasesMotivacionais.length === 0) frasesMotivacionais = [...frasesMotivacionaisOriginais];
-  const idx = Math.floor(Math.random() * frasesMotivacionais.length);
-  fraseDiv.textContent = frasesMotivacionais[idx];
-  frasesMotivacionais.splice(idx,1);
-}
-
-// 🔹 Funções para equação de 2º grau
-function normalizarTexto(s) {
-  return s
-    .replace(/,/g, ".")
-    .replace(/×/g, "x")
-    .replace(/X/g, "x")
-    .replace(/–|—/g, "-")
-    .replace(/\s+/g, " ")
-    .trim();
-}
-function numeroOuDefault(str, def = 1) {
-  if (str === "" || str === "+") return +def;
-  if (str === "-") return -def;
-  const n = parseFloat(str);
-  return isNaN(n) ? def : n;
-}
-function parseQuadratica(input) {
-  let s = normalizarTexto(input).toLowerCase();
-  s = s.replace(/x²/g, "x^2");
-  const tokens = s.split(" ").filter(Boolean);
-
-  let termos = [];
-  if (tokens.length === 1) {
-    const unico = tokens[0]
-      .replace(/-/g, " -")
-      .replace(/\+/g, " +")
-      .trim();
-    termos = unico.split(" ").filter(Boolean);
-  } else {
-    termos = tokens;
-  }
-
-  let a = 0, b = 0, c = 0;
-  for (const tRaw of termos) {
-    const t = tRaw.replace(/\s/g, "");
-    if (!t) continue;
-
-    let m = t.match(/^([+\-]?\d*\.?\d*)x\^?2$/);
-    if (m) { a = numeroOuDefault(m[1], 1); continue; }
-
-    m = t.match(/^([+\-]?\d*\.?\d*)x$/);
-    if (m) { b = numeroOuDefault(m[1], 1); continue; }
-
-    m = t.match(/^[+\-]?\d*\.?\d+$/);
-    if (m) { c += parseFloat(t); continue; }
-  }
-
-  if (a === 0 && b === 0 && c === 0) return null;
-  if (a === 0) return null;
-  return { a, b, c };
-}
-function equacaoSegundoGrau(a,b,c){
-  const delta = b*b - 4*a*c;
-  if (delta < 0) return "A equação não tem raízes reais 😿";
-  if (delta === 0) return `A raiz dupla é ${-b/(2*a)}`;
-  let x1 = (-b + Math.sqrt(delta))/(2*a);
-  let x2 = (-b - Math.sqrt(delta))/(2*a);
-  return `As raízes são ${x1} e ${x2} (Δ=${delta})`;
-}
-
-// 🔹 Avaliar expressões
-function calcularExpressao(msg) {
-  try {
-    msg = msg.replace(/\bvezes\b|x/g,'*')
-             .replace(/\bmais\b/g,'+')
-             .replace(/\bmenos\b/g,'-')
-             .replace(/\bdividido por\b/g,'/');
-    if(/^[0-9+\-*/().\s]+$/.test(msg)){
-      return "Resultado: " + eval(msg);
-    }
-  } catch {}
-  return null;
-}
-
-function botResponse(msg){
-  msg = msg.toLowerCase().trim();
-
-  if (msg.includes("mal") || msg.includes("triste") || msg.includes("depressivo")) {
-    return "Conversa com o Greguinho 💕";
-  }
-
-  // Equação de 2º grau (ex: "2x² 2x 6")
-  const parsed = parseQuadratica(msg);
-  if(parsed) return equacaoSegundoGrau(parsed.a, parsed.b, parsed.c);
-
-  if (msg.startsWith("potencia")) {
-    let parts = msg.split(" ");
-    if(parts.length===3){
-      return `${parts[1]} ^ ${parts[2]} = ${Math.pow(parseFloat(parts[1]),parseFloat(parts[2]))}`;
-    } else return "Use: potencia base expoente (ex: potencia 2 3)";
-  }
-
-  if (msg.startsWith("raiz")) {
-    let parts = msg.split(" ");
-    if(parts.length===2){
-      let valor = parseFloat(parts[1]);
-      if(valor<0) return "Não existe raiz real 😿";
-      return `√${valor} = ${Math.sqrt(valor)}`;
-    } else return "Use: raiz numero (ex: raiz 25)";
-  }
-
-  const resultadoConta = calcularExpressao(msg);
-  if(resultadoConta) return resultadoConta;
-
-  if(msg.includes("oi")) return "Oi! Como você está? 😄";
-  if(msg.includes("tudo bem")) return "Tudo ótimo, e você?";
-  if(msg.includes("nome")) return "Eu sou o Chat Tancredo!";
-
-  if(msg.includes("histórico") || msg.includes("conversa")){
-    return conversa.map(c => (c.sender==="user"?"Você: ":"Chatbot: ") + c.text).join("\n");
-  }
-
-  const respostas = [
-    "Interessante! 😎",
-    "Hmm, me conta mais!",
-    "💡 Boa ideia!",
-    "😂 Haha, adorei!",
-    "🤔 Vou pensar sobre isso..."
-  ];
-  return respostas[Math.floor(Math.random()*respostas.length)];
-}
-
-function sendMessage(){
-  const userMsg = input.value.trim();
-  if(!userMsg) return;
-
-  addMessage(userMsg,"user");
-  conversa.push({sender:"user", text:userMsg});
-
-  const resposta = botResponse(userMsg);
-  addMessage(resposta,"bot");
-  conversa.push({sender:"bot", text:resposta});
-
-  input.value = "";
-}
-
-function toggleTheme(){
-  temaAtual = (temaAtual + 1) % temas.length;
-  document.body.className = temas[temaAtual];
-}
-function clearChat(){
-  chat.innerHTML = "";
-  conversa = [];
-  frasesMotivacionais = [...frasesMotivacionaisOriginais];
-  fraseDiv.textContent = "";
-}
-
-sendBtn.addEventListener("click", sendMessage);
-input.addEventListener("keypress", e => { if(e.key==="Enter") sendMessage(); });
-themeBtn.addEventListener("click", toggleTheme);
-clearBtn.addEventListener("click", clearChat);
-</script>
+    <script>
+        // Efeito de digitação no título
+        document.addEventListener('DOMContentLoaded', function() {
+            const title = document.querySelector('h1');
+            const originalText = title.textContent;
+            title.textContent = '';
+            
+            let i = 0;
+            function typeWriter() {
+                if (i < originalText.length) {
+                    title.textContent += originalText.charAt(i);
+                    i++;
+                    setTimeout(typeWriter, 100);
+                }
+            }
+            
+            setTimeout(typeWriter, 500);
+            
+            // Efeito de confete ao clicar nas piadas
+            const jokeCards = document.querySelectorAll('.joke-card');
+            jokeCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    createConfetti();
+                    // Efeito de balão de texto
+                    const jokeText = this.querySelector('.joke-text').textContent;
+                    showBalloon(jokeText, this);
+                });
+            });
+            
+            function createConfetti() {
+                const colors = ['#ff9a9e', '#fad0c4', '#a1c4fd', '#c2e9fb', '#d4fc79'];
+                for (let i = 0; i < 20; i++) {
+                    const confetti = document.createElement('div');
+                    confetti.style.position = 'fixed';
+                    confetti.style.width = '10px';
+                    confetti.style.height = '10px';
+                    confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                    confetti.style.borderRadius = '50%';
+                    confetti.style.left = Math.random() * 100 + 'vw';
+                    confetti.style.top = '-10px';
+                    confetti.style.zIndex = '9999';
+                    confetti.style.pointerEvents = 'none';
+                    document.body.appendChild(confetti);
+                    
+                    const animation = confetti.animate([
+                        { transform: 'translateY(0) rotate(0deg)', opacity: 1 },
+                        { transform: `translateY(${window.innerHeight}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                    ], {
+                        duration: 1000 + Math.random() * 2000,
+                        easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                    });
+                    
+                    animation.onfinish = () => {
+                        confetti.remove();
+                    };
+                }
+            }
+            
+            function showBalloon(text, element) {
+                const balloon = document.createElement('div');
+                balloon.textContent = "😂 " + text;
+                balloon.style.position = 'absolute';
+                balloon.style.background = '#fff9f9';
+                balloon.style.padding = '10px 15px';
+                balloon.style.borderRadius = '20px';
+                balloon.style.boxShadow = '0 3px 10px rgba(0,0,0,0.2)';
+                balloon.style.zIndex = '10000';
+                balloon.style.maxWidth = '250px';
+                balloon.style.fontSize = '0.9rem';
+                balloon.style.border = '2px solid #ff9a9e';
+                
+                const rect = element.getBoundingClientRect();
+                balloon.style.left = (rect.left + window.scrollX) + 'px';
+                balloon.style.top = (rect.top + window.scrollY - 50) + 'px';
+                
+                document.body.appendChild(balloon);
+                
+                setTimeout(() => {
+                    balloon.remove();
+                }, 2000);
+            }
+            
+            // Efeito de coração flutuante aleatório
+            setInterval(() => {
+                if (Math.random() > 0.7) {
+                    createFloatingHeart();
+                }
+            }, 3000);
+            
+            function createFloatingHeart() {
+                const heart = document.createElement('div');
+                heart.innerHTML = '💖';
+                heart.style.position = 'fixed';
+                heart.style.fontSize = (20 + Math.random() * 20) + 'px';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '100vh';
+                heart.style.zIndex = '9998';
+                heart.style.pointerEvents = 'none';
+                heart.style.opacity = '0.7';
+                document.body.appendChild(heart);
+                
+                const animation = heart.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 0.7 },
+                    { transform: `translateY(-${window.innerHeight + 100}px) rotate(${360}deg)`, opacity: 0 }
+                ], {
+                    duration: 3000 + Math.random() * 2000,
+                    easing: 'cubic-bezier(0.1, 0.8, 0.2, 1)'
+                });
+                
+                animation.onfinish = () => {
+                    heart.remove();
+                };
+            }
+        });
+    </script>
 </body>
 </html>
